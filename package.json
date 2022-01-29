@@ -1,0 +1,16 @@
+{
+  "name": "mockgroupies-holders",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ defijesus/mockgroupies-holders",
+    "create-local": "graph create --node http://localhost:8020/ defijesus/mockgroupies-holders",
+    "remove-local": "graph remove --node http://localhost:8020/ defijesus/mockgroupies-holders",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 defijesus/mockgroupies-holders"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.26.0",
+    "@graphprotocol/graph-ts": "0.24.1"
+  }
+}
