@@ -1,6 +1,4 @@
-type ExampleEntity @entity {
+type Holder @entity {
   id: ID!
-  count: BigInt!
-  owner: Bytes! # address
-  spender: Bytes! # address
+  ownedIds: [BigInt!]
 }
