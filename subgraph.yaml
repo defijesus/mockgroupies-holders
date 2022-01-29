@@ -8,6 +8,7 @@ dataSources:
     source:
       address: "0xE247CF7a15169977e082C40a1Df27faAf1e76A17"
       abi: MockGroupies
+      startBlock: 10043898
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
