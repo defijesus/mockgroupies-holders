@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { store, Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   MockGroupies,
   Approval,
@@ -7,7 +7,7 @@ import {
 } from "../generated/MockGroupies/MockGroupies"
 import { Holder, Token } from "../generated/schema"
 
-const stakingContract = '0x9c527cea78e7Ec46678F7007410a070A912927ca'
+const stakingContract: Address = Address.fromString('0x9c527cea78e7ec46678f7007410a070a912927ca')
 
 export function handleApprovalForAll(event: ApprovalForAll): void { }
 
@@ -20,8 +20,7 @@ export function handleTransfer(event: Transfer): void {
     if (!fromEntity) {
       fromEntity = new Holder(from.toHex())
     }
-    console.log(`${from} === ${Address.fromString(stakingContract)}`)
-    if (from === Address.fromString(stakingContract)) {
+    if (from === stakingContract) {
       console.log(`im in withdraw`)
       let tokenEntity = Token.load(to.toHex())
       if (!tokenEntity) {
@@ -39,23 +38,26 @@ export function handleTransfer(event: Transfer): void {
     if (index > -1) {
       arr.splice(index, 1)
     }
-    fromEntity.ownedIds = arr
-    fromEntity.save()
+    if (arr.length === 0) {
+      store.remove('Holder', from.toHex())
+    } else {
+      fromEntity.ownedIds = arr
+      fromEntity.save() 
+    }
   }
   let toEntity = Holder.load(to.toHex())
   if (!toEntity) {
     toEntity = new Holder(to.toHex())
   }
-  if (to === Address.fromString(stakingContract)) {
-    console.log(`im in deposit`)
-    let tokenEntity = Token.load(from.toHex())
-    if (!tokenEntity) {
-      tokenEntity = new Token(from.toHex())
-    }
-    tokenEntity.isStaked = true
-    tokenEntity.tokenID = tokenId
-    tokenEntity.save()
-  }
+  // if (to === stakingContract) {
+  //   let tokenEntity = Token.load(from.toHex())
+  //   if (!tokenEntity) {
+  //     tokenEntity = new Token(from.toHex())
+  //   }
+  //   tokenEntity.isStaked = true
+  //   tokenEntity.tokenID = tokenId
+  //   tokenEntity.save()
+  // }
   let arr = toEntity.ownedIds
   if (!arr) {
     arr = new Array<BigInt>()
