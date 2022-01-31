@@ -2,3 +2,9 @@ type Holder @entity {
   id: ID!
   ownedIds: [BigInt!]
 }
+
+type Token @entity {
+  id: ID!
+  isStaked: Boolean!
+  tokenID: BigInt!
+}

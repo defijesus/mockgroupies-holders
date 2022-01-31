@@ -5,9 +5,11 @@ import {
   ApprovalForAll,
   Transfer
 } from "../generated/MockGroupies/MockGroupies"
-import { Holder } from "../generated/schema"
+import { Holder, Token } from "../generated/schema"
 
-export function handleApprovalForAll(event: ApprovalForAll): void {}
+const stakingContract = '0x9c527cea78e7Ec46678F7007410a070A912927ca'
+
+export function handleApprovalForAll(event: ApprovalForAll): void { }
 
 export function handleTransfer(event: Transfer): void {
   let to = event.params.to;
@@ -17,6 +19,17 @@ export function handleTransfer(event: Transfer): void {
     let fromEntity = Holder.load(from.toHex())
     if (!fromEntity) {
       fromEntity = new Holder(from.toHex())
+    }
+    console.log(`${from} === ${Address.fromString(stakingContract)}`)
+    if (from === Address.fromString(stakingContract)) {
+      console.log(`im in withdraw`)
+      let tokenEntity = Token.load(to.toHex())
+      if (!tokenEntity) {
+        tokenEntity = new Token(to.toHex())
+      }
+      tokenEntity.isStaked = false
+      tokenEntity.tokenID = tokenId
+      tokenEntity.save()
     }
     let arr = fromEntity.ownedIds
     if (!arr) {
@@ -32,6 +45,16 @@ export function handleTransfer(event: Transfer): void {
   let toEntity = Holder.load(to.toHex())
   if (!toEntity) {
     toEntity = new Holder(to.toHex())
+  }
+  if (to === Address.fromString(stakingContract)) {
+    console.log(`im in deposit`)
+    let tokenEntity = Token.load(from.toHex())
+    if (!tokenEntity) {
+      tokenEntity = new Token(from.toHex())
+    }
+    tokenEntity.isStaked = true
+    tokenEntity.tokenID = tokenId
+    tokenEntity.save()
   }
   let arr = toEntity.ownedIds
   if (!arr) {
